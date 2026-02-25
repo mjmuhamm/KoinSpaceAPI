@@ -99,7 +99,7 @@ fun Home(viewModel: KoinViewModel, viewModel2: SecondViewModel, modifier: Modifi
             currentScreen = false
         })
     } else {
-        SecondPage(id = passingId, viewModel = viewModel2, onNavigate = {
+        SecondPage(id = passingId, viewModel = viewModel, onNavigate = {
             currentScreen = true
         })
     }
@@ -163,10 +163,10 @@ fun SpaceItems(info: Result, onNavigate: (String) -> Unit = {}) {
 
 
 @Composable
-fun SecondPage(id: String, viewModel: SecondViewModel, onNavigate: () -> Unit = {}) {
+fun SecondPage(id: String, viewModel: KoinViewModel, onNavigate: () -> Unit = {}) {
 
     LaunchedEffect(id) {
-       viewModel.secondPage(id)
+       viewModel.getResult(id)
     }
 
         val state by viewModel.secondState.observeAsState(SecondState.Loading)

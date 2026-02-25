@@ -16,7 +16,6 @@ interface SpaceService {
 
 class SpaceServiceImpl(private val spaceRepository: SpaceRepository) : SpaceService {
 
-
     override suspend fun getResult(id: String): Result<SecondResponse> = spaceRepository.findResult(id)
 
     override suspend fun loadResults(): Result<List<com.example.spaceapi.model.firstPage.Result>> =
