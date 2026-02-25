@@ -65,12 +65,10 @@ class MainActivity : ComponentActivity() {
     private val viewModel2: SecondViewModel by viewModels()
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startKoin{
+        startKoin {
             androidLogger()
             androidContext(this@MainActivity)
             modules(appModule)
@@ -91,7 +89,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Home(viewModel: KoinViewModel, modifier: Modifier = Modifier) {
     var currentScreen by rememberSaveable() { mutableStateOf(true) }
-    var passingId by rememberSaveable {mutableStateOf("")}
+    var passingId by rememberSaveable { mutableStateOf("") }
 
     if (currentScreen) {
         MainScreen(viewModel = viewModel, onNavigate = { id ->
@@ -120,7 +118,9 @@ fun MainScreen(viewModel: KoinViewModel, onNavigate: (String) -> Unit = {}) {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().padding(top = 16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         val state by viewModel.spaceState.observeAsState(SpaceState.Loading)
@@ -148,12 +148,23 @@ fun MainScreen(viewModel: KoinViewModel, onNavigate: (String) -> Unit = {}) {
 
 @Composable
 fun SpaceItems(info: Result, onNavigate: (String) -> Unit = {}) {
-    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = { onNavigate(info.id.toString()) })) {
-        Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onNavigate(info.id.toString()) })
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             AsyncImage(
                 model = info.image_url,
                 contentDescription = info.summary,
-                modifier = Modifier.size(100.dp).clip(CircleShape)
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
             )
 
             Text(text = info.title, modifier = Modifier.padding(start = 20.dp))
@@ -166,103 +177,112 @@ fun SpaceItems(info: Result, onNavigate: (String) -> Unit = {}) {
 fun SecondPage(id: String, viewModel: KoinViewModel, onNavigate: () -> Unit = {}) {
 
     LaunchedEffect(id) {
-       viewModel.getResult(id)
+        viewModel.getResult(id)
     }
 
     val state by viewModel.secondState.observeAsState(SecondState.Loading)
-                when (state) {
-                    is SecondState.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+    when (state) {
+        is SecondState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is SecondState.Success -> {
+            val info = (state as SecondState.Success).data
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 25.dp, top = 10.dp)) {
+                    Box(modifier = Modifier) {
+
+                        Text(
+                            "<",
+                            color = Color.Gray,
+                            fontSize = 50.sp,
+                            fontWeight = FontWeight.Light,
+                            modifier = Modifier
+                                .padding(0.dp, 0.dp, 20.dp, 0.dp)
+                                .clickable(onClick = onNavigate)
+
+                        )
+
+                        Text(
+                            "Second Page",
+                            color = Color.Black,
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center,
+
+
+                            modifier = Modifier.padding(100.dp, 13.dp, 0.dp, 0.dp)
+                        )
                     }
+                }
 
-                    is SecondState.Success -> {
-                        val info = (state as SecondState.Success).data
-                        Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
-                            Row(modifier = Modifier.fillMaxWidth().padding(start = 25.dp, top = 10.dp)) {
-                                Box(modifier = Modifier) {
-
-                                    Text(
-                                        "<",
-                                        color = Color.Gray,
-                                        fontSize = 50.sp,
-                                        fontWeight = FontWeight.Light,
-                                        modifier = Modifier
-                                            .padding(0.dp, 0.dp, 20.dp, 0.dp)
-                                            .clickable(onClick = onNavigate)
-
-                                    )
-
-                                    Text(
-                                        "Second Page",
-                                        color = Color.Black,
-                                        fontSize = 30.sp,
-                                        fontWeight = FontWeight.Normal,
-                                        textAlign = TextAlign.Center,
-
-
-                                        modifier = Modifier.padding(100.dp, 13.dp, 0.dp, 0.dp)
-                                    )
-                                }
-                            }
-
-                            HorizontalDivider(
-                                modifier = Modifier.padding(top = 10.dp),
-                                thickness = 0.8.dp,
-                                color = Color.Gray
-                            )
-                            Row(modifier = Modifier.padding(30.dp).fillMaxWidth()) {
-                                AsyncImage(
-                                    model = info.image_url,
-                                    contentDescription = info.summary,
-                                    modifier = Modifier.size(150.dp)
-                                )
-                                Column {
-                                    Text(
-                                        info.title,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(start = 10.dp, top = 20.dp)
-                                    )
-                                    Text(
-                                        "Author: ${info.authors[0].name}",
-                                        modifier = Modifier.padding(start = 10.dp, top = 8.dp)
-                                    )
-                                }
-                            }
-                            Column(modifier = Modifier.padding(start = 25.dp, end = 15.dp)) {
-                                Text("News Site", modifier = Modifier.padding(bottom = 7.dp))
-                                Text(
-                                    info.news_site,
-                                    modifier = Modifier,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Text(
-                                    "News Article",
-                                    modifier = Modifier.padding(bottom = 7.dp, top = 20.dp)
-                                )
-                                Text(info.url)
-
-                                Text(
-                                    "Summary",
-                                    modifier = Modifier.padding(bottom = 7.dp, top = 20.dp)
-                                )
-                                Text(info.summary)
-                            }
-
-                        }
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 10.dp),
+                    thickness = 0.8.dp,
+                    color = Color.Gray
+                )
+                Row(modifier = Modifier
+                    .padding(30.dp)
+                    .fillMaxWidth()) {
+                    AsyncImage(
+                        model = info.image_url,
+                        contentDescription = info.summary,
+                        modifier = Modifier.size(150.dp)
+                    )
+                    Column {
+                        Text(
+                            info.title,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 10.dp, top = 20.dp)
+                        )
+                        Text(
+                            "Author: ${info.authors[0].name}",
+                            modifier = Modifier.padding(start = 10.dp, top = 8.dp)
+                        )
                     }
+                }
+                Column(modifier = Modifier.padding(start = 25.dp, end = 15.dp)) {
+                    Text("News Site", modifier = Modifier.padding(bottom = 7.dp))
+                    Text(
+                        info.news_site,
+                        modifier = Modifier,
+                        fontWeight = FontWeight.Bold
+                    )
 
-                    is SecondState.Error -> {
-                        Column() {
-                            Text("Id passed: $id", modifier = Modifier.padding(30.dp))
-                            Text("Error loading second page: ${(state as SecondState.Error).message}", modifier = Modifier.padding(30.dp))
-                        }
-                    }
+                    Text(
+                        "News Article",
+                        modifier = Modifier.padding(bottom = 7.dp, top = 20.dp)
+                    )
+                    Text(info.url)
+
+                    Text(
+                        "Summary",
+                        modifier = Modifier.padding(bottom = 7.dp, top = 20.dp)
+                    )
+                    Text(info.summary)
+                }
+
+            }
+        }
+
+        is SecondState.Error -> {
+            Column() {
+                Text("Id passed: $id", modifier = Modifier.padding(30.dp))
+                Text(
+                    "Error loading second page: ${(state as SecondState.Error).message}",
+                    modifier = Modifier.padding(30.dp)
+                )
+            }
+        }
     }
 }
 
