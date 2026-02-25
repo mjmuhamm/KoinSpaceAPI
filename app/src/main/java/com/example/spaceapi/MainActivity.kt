@@ -169,7 +169,7 @@ fun SecondPage(id: String, viewModel: KoinViewModel, onNavigate: () -> Unit = {}
        viewModel.getResult(id)
     }
 
-        val state by viewModel.secondState.observeAsState(SecondState.Loading)
+            val state by viewModel.secondState.observeAsState(SecondState.Loading)
                 when (state) {
                     is SecondState.Loading -> CircularProgressIndicator()
 
