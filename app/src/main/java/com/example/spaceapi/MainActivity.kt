@@ -113,10 +113,11 @@ fun MainScreen(viewModel: KoinViewModel, onNavigate: (String) -> Unit = {}) {
     var greetingMessage by rememberSaveable { mutableStateOf("") }
 
 //    viewModel.sayHello(32803)
+
+
     LaunchedEffect(Unit) {
         viewModel.getResults()
     }
-
 
     val state by viewModel.spaceState.observeAsState(SpaceState.Loading)
     Box(
