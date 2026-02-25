@@ -35,6 +35,7 @@ class KoinViewModel(private val spaceService: SpaceService) : ViewModel() {
     fun getResult(id: String) {
         viewModelScope.launch {
             _secondState.value = SecondState.Loading
+            _spaceState.value = SpaceState.Loading
             val result = spaceService.getResult(id)
             _secondState.value = if (result.isSuccess) {
                 val info = result.getOrNull()

@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
             SpaceAPITheme {
                 val viewModel3: KoinViewModel = koinViewModel()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Home(viewModel = viewModel3, viewModel2 = viewModel2, modifier = Modifier.padding(innerPadding))
+                    Home(viewModel = viewModel3, modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Home(viewModel: KoinViewModel, viewModel2: SecondViewModel, modifier: Modifier = Modifier) {
+fun Home(viewModel: KoinViewModel, modifier: Modifier = Modifier) {
     var currentScreen by rememberSaveable() { mutableStateOf(true) }
     var passingId by rememberSaveable {mutableStateOf("")}
 
@@ -119,11 +119,11 @@ fun MainScreen(viewModel: KoinViewModel, onNavigate: (String) -> Unit = {}) {
         viewModel.getResults()
     }
 
-    val state by viewModel.spaceState.observeAsState(SpaceState.Loading)
     Box(
         modifier = Modifier.fillMaxSize().padding(top = 16.dp),
         contentAlignment = Alignment.Center
     ) {
+        val state by viewModel.spaceState.observeAsState(SpaceState.Loading)
         when (state) {
             is SpaceState.Loading -> CircularProgressIndicator()
             is SpaceState.Success -> {
