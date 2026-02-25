@@ -169,9 +169,16 @@ fun SecondPage(id: String, viewModel: KoinViewModel, onNavigate: () -> Unit = {}
        viewModel.getResult(id)
     }
 
-            val state by viewModel.secondState.observeAsState(SecondState.Loading)
+    val state by viewModel.secondState.observeAsState(SecondState.Loading)
                 when (state) {
-                    is SecondState.Loading -> CircularProgressIndicator()
+                    is SecondState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
 
                     is SecondState.Success -> {
                         val info = (state as SecondState.Success).data
